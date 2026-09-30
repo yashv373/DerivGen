@@ -24,3 +24,8 @@ eg clk = 0 per instance instead of routing from a shared top-level clock. This w
   - ET.indent() (Python 3.9+) is far cleaner than minidom.toprettyxml() for pretty-printing.
   - Tie-offs have no native representation in IEEE 1685-2009 design XML. We use spirit:vendorExtensions with a custom derivgen:tieOff element.
   - FuseSoC supports IP-XACT component XML via the component key in .core files, but only for fileset parsing. We generate IP-XACT independently.
+
+### [2026-09-30 21:25:27] Full Manual Demo - End to End Success
+* **Decision:** Build a simple but complete SoC (4 gates + MUX + LFSR) to demonstrate the full EDA pipeline.
+* **Impact (Positive):** All 6 IPs instantiated cleanly. The generated Verilog wrapper is 63 lines of correct structural RTL with human-readable signal names (a_i, b_i, y_o, and_out, or_out, etc.). No Migen auto-naming corruption.
+* **Key insight:** Keeping IPs as pure combinational gates (no bus protocol) made the demo crystal clear. The LFSR is the only sequential element, proving the framework handles both combinational and clocked IPs.

@@ -27,3 +27,11 @@
 ### Technical
 * Component XML includes: vendor/library/name/version (VLNV), model/ports with direction and vector widths, views with envIdentifier, fileSets pointing to Verilog sources.
 * Design XML includes: componentInstances with componentRef VLNV, adHocConnections with internalPortReference, vendorExtensions for tie-offs using derivgen namespace.
+
+## [v0.4.0] - 2026-09-30 21:25:27
+### Added
+* Full end-to-end EDA demo (ull_demo.py) with 6 hand-written Verilog IPs.
+* IPs: gate_and, gate_or, gate_nand, gate_xor, mux4to1, lfsr2bit.
+* Demo SoC architecture: 4 gates feed a 4:1 MUX, LFSR drives select lines.
+* Complete pipeline: IP authoring -> Migen assembly -> Verilog wrapper -> IP-XACT packaging -> FuseSoC .core.
+* 11/11 structural verification checks passing.
