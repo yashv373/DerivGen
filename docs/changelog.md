@@ -17,3 +17,13 @@
 * Migen Instance objects must be added via self.specials += not self.submodules.
 * ClockSignal()/ResetSignal() require an explicit ClockDomain to resolve correctly.
 * Removed all proprietary tool/company name references from codebase.
+
+## [v0.3.0] - 2026-09-30 21:19:15
+### Added
+* IP-XACT generator (eda_framework/ipxact_generator.py) producing IEEE 1685-2009 compliant XML.
+* Generates per-IP component XMLs with VLNV, ports (with bus widths), views, and fileSets.
+* Generates SoC-level design XML with componentInstances, adHocConnections, and vendorExtension tie-offs.
+* Uses only Python standard library (xml.etree.ElementTree) -- zero external dependencies.
+### Technical
+* Component XML includes: vendor/library/name/version (VLNV), model/ports with direction and vector widths, views with envIdentifier, fileSets pointing to Verilog sources.
+* Design XML includes: componentInstances with componentRef VLNV, adHocConnections with internalPortReference, vendorExtensions for tie-offs using derivgen namespace.

@@ -15,3 +15,11 @@ We broke the assembly process down into 5 modular scripts, mirroring traditional
 
 ### The ML Integration
 In the future, the Machine Learning model will not write raw Verilog. It will simply generate these 5 Python scripts. The Migen engine will then automatically compile them into the final Verilog wrapper, ensuring the syntax is always perfect.
+
+### IP-XACT Standards Layer (IEEE 1685-2009)
+On top of the Migen assembly engine, we added an IP-XACT metadata layer. For every IP the framework touches, it generates a standards-compliant XML file that describes:
+- **VLNV** (Vendor, Library, Name, Version) -- the universal ID for the IP
+- **Ports** -- every input/output with direction and bus width
+- **FileSets** -- pointer to the Verilog source file
+
+For the assembled SoC, it generates a **Design XML** that lists which components are instantiated, how they are ad-hoc wired, and which ports are tied off. This XML can be consumed by any IEEE 1685-2009 compliant tool (Kactus2, Vivado, Cadence, etc.).

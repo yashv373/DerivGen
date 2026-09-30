@@ -15,3 +15,12 @@ eg clk = 0 per instance instead of routing from a shared top-level clock. This w
 * **Decision:** Built a 5-level stress test: Baseline (2 IP), Scale (8 IP), Wide Bus (256-bit AXI), Derivative Removal (drop 3 IPs), Structural Diff.
 * **Impact (Positive):** Framework handles 1-bit to 256-bit buses, 2 to 8 IP instantiations, ad-hoc cross-wiring between IPs, tie-offs, and derivative IP removal flawlessly.
 * **Key finding:** The diff between the 8-IP parent (117 lines) and 5-IP derivative (74 lines) cleanly shows only the removed ip_aes, ip_dma, ip_pwm blocks disappearing. Zero false positives.
+
+### [2026-09-30 21:19:15] IP-XACT IEEE 1685-2009 Integration
+* **Decision:** Use Python built-in xml.etree.ElementTree instead of third-party pyEDAA.IPXACT to generate standards-compliant IP-XACT XML.
+* **Impact (Positive):** Zero external dependencies. The generator produces clean spirit: namespaced component and design XML that any IEEE 1685-2009 compliant tool can consume.
+* **Key learnings:**
+  - ET.register_namespace() controls the prefix. Setting xmlns manually on elements causes duplicates that crash minidom.parseString().
+  - ET.indent() (Python 3.9+) is far cleaner than minidom.toprettyxml() for pretty-printing.
+  - Tie-offs have no native representation in IEEE 1685-2009 design XML. We use spirit:vendorExtensions with a custom derivgen:tieOff element.
+  - FuseSoC supports IP-XACT component XML via the component key in .core files, but only for fileset parsing. We generate IP-XACT independently.

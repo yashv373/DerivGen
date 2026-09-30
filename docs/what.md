@@ -11,3 +11,6 @@ Building a derivative chip (scaling a flagship chip down for IoT, for example) r
 
 ### What we are introducing through ML
 We are introducing an AI architect. The ML model will take natural language commands (e.g., *"Remove the crypto core"*), mathematically resolve the hardware dependencies using Association Rules, and auto-generate the structural configuration scripts for the EDA tools.
+
+### Standards Compliance
+DerivGen generates IEEE 1685-2009 (IP-XACT) compliant XML for every IP and every SoC assembly. This means the metadata is not locked to any single tool. The same XML that our framework produces can be imported into Kactus2, Xilinx Vivado, Cadence, or any other IP-XACT compliant EDA tool.
