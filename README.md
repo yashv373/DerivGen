@@ -111,7 +111,7 @@ graph neighbourhood of those instances is read straight off the design. Exact
 lookup beats cosine similarity when the keys are exact.
 
 That matters practically: the prompt stays small enough to paste into a chat
-window, which is the only kind of model available inside ST.
+window, so the same pipeline works with a small or chat-only model.
 
 What goes into the prompt:
 
@@ -165,9 +165,9 @@ cost more than they gave. Migen named nets things like
 ports the module did not have, silently. A structural emitter we control is
 smaller, readable, and can refuse what it cannot verify.
 
-`build.py` standing alone is the point: in ST's flow that job belongs to
-Magillem. Replacing it changes one file. The edits, the checker, the memory
-and the scoring do not know it happened.
+`build.py` standing alone is the point: in a production flow that job belongs
+to a commercial integration tool. Replacing it changes one file. The edits,
+the checker, the memory and the scoring do not know it happened.
 
 ## The Tcl format
 
@@ -241,7 +241,7 @@ derivgen/
   plan.py      rule-based planner + LLM planner + repair loop
   llm.py       prompt building, manual and mock backends
   compare.py   scoring against a golden
-  build.py     Verilog wrapper          <- Magillem's job, isolated here
+  build.py     Verilog wrapper          <- swappable: isolated on purpose
   cli.py
 memory/        the IP library, platforms and past derivatives
 tools/         package_ips.py, run once to package the library

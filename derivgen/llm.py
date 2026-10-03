@@ -8,15 +8,14 @@ Three things live here:
   backends         where the prompt goes and the reply comes from
 
 The prompt is deliberately short. The model is shown four instances and their
-neighbours, not the whole platform, because the model that has to run this at
-ST is a chat window with no API and no patience. Everything the model would
-otherwise have to work out -- what depends on what, what breaks if this goes
--- is already in the prompt, computed from the design.
+neighbours, not the whole platform, so that it also works with a small or
+chat-only model. Everything the model would otherwise have to work out --
+what depends on what, what breaks if this goes -- is already in the prompt,
+computed from the design.
 
 Backends:
   ManualBackend  writes the prompt to a file, waits for the reply to be
-                 pasted back. This is the one that works with a chat-only
-                 internal model.
+                 pasted back. For a chat-only model with no API access.
   MockBackend    replies from a cache on disk, keyed by the hash of the
                  prompt, so tests and benchmarks run offline and repeatably.
 """

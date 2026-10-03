@@ -1,9 +1,9 @@
 """
 The mini build tool: design + IP library -> Verilog wrapper.
 
-In ST's flow this job belongs to Magillem. Keeping it in its own file makes
-the swap obvious: the real tool reads the same script and the same IP-XACT,
-and DerivGen stops here.
+In a production flow this job belongs to a commercial integration tool.
+Keeping it in its own file makes the swap obvious: such a tool reads the
+same script and the same IP-XACT, and DerivGen stops here.
 
 It is strictly structural. It instantiates, declares wires, concatenates and
 ties off. It never writes behaviour, and it never connects a port the IP-XACT

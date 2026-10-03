@@ -8,7 +8,7 @@ Read this file before generating any code or making any architectural decisions 
 * **The Goal:** To generate derivative SoC designs (Child SoCs) from a Base SoC (Parent SoC) based on Natural Language Processing (NLP) instructions.
 
 ## 2. The EDA Framework's Role (The "Plumbing")
-* We are using open-source tools (**Migen, FuseSoC, IP-XACT**) to strictly *mimic* a commercial EDA workflow (e.g., Arteris Magillem, Agnisys IDS-Integrate).
+* We are using open-source tools (**Migen, FuseSoC, IP-XACT**) to strictly *mimic* a commercial EDA integration workflow.
 * **Why?** Because we DO NOT want hallucinated RTL from the ML model. The ML model is fundamentally bad at writing syntactically perfect Verilog wrappers. 
 * **The Boundary:** The Python EDA framework handles 100% of the RTL assembly and XML generation. The EDA framework *never* writes the internal behavioral logic of an IP.
 

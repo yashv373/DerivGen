@@ -2,8 +2,7 @@
 ============================================================================
 Derivative SoC Platform Generation using ML
 ============================================================================
-Hackathon: Iris @ STMicroelectronics
-Author: [Your Name]
+Earlier experiment: classical ML baseline (kept for reference)
 Date: September 2026
 
 Run in Google Colab:
@@ -788,7 +787,7 @@ print(f"""
   Best ML Model:                 {best_model}
   Best F1 Score:                 {best_f1:.3f}
 
-  To use with YOUR STMicro data:
+  To use with your own platform data:
      1. Replace the PLATFORMS list with your parsed platform data
      2. Update IP_CATEGORIES with your IP taxonomy
      3. Re-run -- the ML + rules adapt automatically

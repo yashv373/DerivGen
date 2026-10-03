@@ -5,9 +5,11 @@ description.
 
 ## What this is
 
-An open-source sandbox that mimics ST's platform-derivative flow so the
-software framework can be validated before porting. Nothing ST-specific lives
-here. Porting happens later, by swapping adapters.
+An open-source framework for deriving a hardware platform from an existing
+one. The goal is to prove the software works, locally and end to end, on a
+sandbox SoC we control. Keep everything in this repo generic and
+self-contained: no company names, no proprietary tool names, no internal
+process descriptions.
 
 ## The rules that must not be broken
 
@@ -32,13 +34,13 @@ here. Porting happens later, by swapping adapters.
 scoring all work on the records, never on text. This is what makes porting
 cheap: swap the reader and writer, the middle is untouched.
 
-**`build.py` is isolated on purpose.** It is Magillem's job. At ST it gets
-deleted and the real tool reads the same Tcl and the same IP-XACT.
+**`build.py` is isolated on purpose.** In a production flow this job belongs
+to a commercial integration tool, which would read the same Tcl and the same
+IP-XACT. Swapping it must stay a one-file change.
 
 **Retrieval is exact lookup, not embeddings.** Tags and graph neighbourhoods
 are exact keys. A dictionary beats cosine similarity here, and the prompt
-stays small enough to paste into a chat window — which is the only model
-available inside ST.
+stays small enough for a small or chat-only model to handle.
 
 **The repair loop is deterministic.** The model proposes only what the
 instruction asks for. Dependency edits (tie-offs, dropped pins) are worked out
