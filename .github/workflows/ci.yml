@@ -1,0 +1,56 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest ruff
+
+      # Verilator is the only external tool, and only for the optional lint
+      # below. The framework itself needs nothing but the standard library.
+      - name: Install Verilator
+        run: sudo apt-get update && sudo apt-get install -y verilator
+
+      - name: Lint
+        run: ruff check derivgen tools tests
+
+      - name: Tests
+        run: pytest -q
+
+      - name: Benchmark
+        run: python -m derivgen bench --json out/bench.json
+
+      - name: Build the parent and every golden child, then lint them
+        run: |
+          set -e
+          mkdir -p out
+          python -m derivgen build memory/platforms/derivsense.tcl -o out/derivsense.v
+          for tcl in memory/derivatives/*/child.tcl; do
+            name=$(basename "$(dirname "$tcl")")
+            python -m derivgen build "$tcl" -o "out/$name.v"
+          done
+          for v in out/*.v; do
+            echo "--- $v"
+            verilator --lint-only -Wno-fatal \
+              -Imemory/ip_library/rtl "$v" memory/ip_library/rtl/*.v
+          done
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: generated
+          path: out/

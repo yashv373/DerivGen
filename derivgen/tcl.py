@@ -12,10 +12,16 @@ Blank lines are ignored. That is the whole grammar.
 import re
 
 from .design import (
-    Address, BusConnection, BusPort, Connection, Design, Instance, Port,
-    Ref, TieOff,
+    Address,
+    BusConnection,
+    BusPort,
+    Connection,
+    Design,
+    Instance,
+    Port,
+    Ref,
+    TieOff,
 )
-
 
 # ---------------------------------------------------------------------------
 # The command names. Change these to match another tool's vocabulary.
@@ -83,10 +89,21 @@ def _parse_int(text: str, line_no: int, what: str) -> int:
 
 
 def read_tcl(text: str, name: str) -> Design:
-    """Read a platform script into a Design."""
+    """
+    Read a platform script into a Design.
+
+    `name` is the fallback. A "# platform: <name>" line, which write_tcl
+    always emits, wins over it -- otherwise a golden saved as child.tcl would
+    produce a module called "child".
+    """
     design = Design(name=name)
 
     for line_no, raw in enumerate(text.splitlines(), start=1):
+        declared = re.match(r"^\s*#\s*platform:\s*(\S+)\s*$", raw)
+        if declared:
+            design.name = declared.group(1)
+            continue
+
         line = raw.split("#", 1)[0].strip()
         if not line:
             continue

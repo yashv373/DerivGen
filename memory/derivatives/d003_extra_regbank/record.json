@@ -1,0 +1,21 @@
+{
+  "id": "d003_extra_regbank",
+  "instruction": "Add a second register bank for more configuration space",
+  "parent": "derivsense",
+  "derivative_type": "scale_up",
+  "edits": [
+    {"edit": "clone", "source": "reg_bank0", "name": "reg_bank1",
+     "bus_port": "bus_fabric0/m3_apb", "base": "0x20003000",
+     "reason": "copy of an instance the parent already has"}
+  ],
+  "child_tcl": "child.tcl",
+  "golden_source": "generated then reviewed",
+  "verified": true,
+  "paraphrases": [
+    "Add a second register bank for more configuration space",
+    "I want another register bank",
+    "Clone the config registers into the spare bus slot",
+    "Add an extra reg_bank0"
+  ],
+  "notes": "Scale-up only ever clones an IP the parent already has. The clone lands on the spare fabric port m3, which drops the placeholder tie-offs that were holding it. 0x20003000 is right because the fabric decodes paddr[13:12], so port 3 answers at offset 0x3000."
+}

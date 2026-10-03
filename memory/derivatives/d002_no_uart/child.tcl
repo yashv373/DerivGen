@@ -1,23 +1,19 @@
-# platform: derivsense
+# platform: derivsense_no_uart
 #
-# A small sensor-monitoring SoC. This is the verified parent that every
-# derivative starts from. Hand-written, 15 instances, 13 IP types.
+# GOLDEN -- hand-written from derivsense.tcl, not generated.
 #
-# Structure:
-#   host_apb -> bus_fabric0 -> m0: sram_ctrl0 -> sram_macro0
-#                              m1: reg_bank0
-#                              m2: uart_tx0
-#   sensor_data_in -> 2 format/threshold channels -> data_agg0 -> intr
-#   core_fsm0 runs the control flow; shadow_fsm0 + lockstep_cmp0 check it
-#   parity_gen0 + parity_chk0 check the SRAM data path
+# uart_tx0 is gone, along with its clock, reset, bus connection, address and
+# the uart_tx pin it drove.
 #
-# The safety group is shadow_fsm0, lockstep_cmp0, parity_gen0, parity_chk0.
+# The interesting part: fabric port m2 now answers to nobody, so its three
+# response inputs need holding, the same way the spare m3 port already is.
+# pready must be 1'b1, not zero -- a slave that never signals ready would
+# hang the bus. That value is copied from what the parent does on m3.
 
 # --- top-level pins ---
 add_port  clk               in   1
 add_port  rst_n             in   1
 add_port  sensor_data_in    in   64
-add_port  uart_tx           out  1
 add_port  intr_threshold    out  1
 add_port  err_lockstep      out  1
 add_port  err_parity        out  1
@@ -30,7 +26,6 @@ add_instance  bus_fabric0    Bus_Fabric_IP
 add_instance  sram_ctrl0     SRAM_Ctrl_IP
 add_instance  sram_macro0    SRAM_Macro_IP
 add_instance  reg_bank0      RegBank_IP
-add_instance  uart_tx0       UART_TX_IP
 add_instance  sensor_fmt_0   Sensor_Formatter_IP
 add_instance  sensor_fmt_1   Sensor_Formatter_IP
 add_instance  thresh_chk_0   Threshold_Check_IP
@@ -46,19 +41,14 @@ add_instance  parity_chk0    Parity_Check_IP
 connect_bus  host_apb             bus_fabric0/s_apb
 connect_bus  bus_fabric0/m0_apb   sram_ctrl0/apb
 connect_bus  bus_fabric0/m1_apb   reg_bank0/apb
-connect_bus  bus_fabric0/m2_apb   uart_tx0/apb
 
 # --- address map ---
-# The fabric decodes paddr[13:12], so the slaves sit 0x1000 apart.
 set_address  sram_ctrl0/apb       0x20000000  0x1000
 set_address  reg_bank0/apb        0x20001000  0x1000
-set_address  uart_tx0/apb         0x20002000  0x1000
 
 # --- clocks and resets ---
-# bus_fabric0 and sram_ctrl0 are combinational, so they need neither.
 connect  clk    sram_macro0/clk
 connect  clk    reg_bank0/clk
-connect  clk    uart_tx0/clk
 connect  clk    sensor_fmt_0/clk
 connect  clk    sensor_fmt_1/clk
 connect  clk    thresh_chk_0/clk
@@ -68,7 +58,6 @@ connect  clk    core_fsm0/clk
 connect  clk    shadow_fsm0/clk
 
 connect  rst_n  reg_bank0/rst_n
-connect  rst_n  uart_tx0/rst_n
 connect  rst_n  sensor_fmt_0/rst_n
 connect  rst_n  sensor_fmt_1/rst_n
 connect  rst_n  thresh_chk_0/rst_n
@@ -94,7 +83,6 @@ connect  data_agg0/intr         intr_threshold
 
 # --- control ---
 connect  sensor_fmt_0/data_out  core_fsm0/data_in
-connect  uart_tx0/tx            uart_tx
 
 # --- safety: lockstep ---
 connect  sensor_fmt_0/data_out  shadow_fsm0/data_in
@@ -109,11 +97,13 @@ connect  parity_gen0/parity     parity_chk0/parity
 connect  parity_chk0/err        err_parity
 
 # --- tie-offs ---
-# Only 2 of the aggregator's 32 alert inputs are used in this platform.
 tie  data_agg0/alert_bus[31:2]  30'b0
 
-# Fabric port m3 is the spare expansion slot: nothing answers on it yet, so
-# its response inputs are held at "no error, always ready".
+# m2 lost its peripheral, m3 never had one.
+tie  bus_fabric0/m2_apb_prdata   32'b0
+tie  bus_fabric0/m2_apb_pready   1'b1
+tie  bus_fabric0/m2_apb_pslverr  1'b0
+
 tie  bus_fabric0/m3_apb_prdata   32'b0
 tie  bus_fabric0/m3_apb_pready   1'b1
 tie  bus_fabric0/m3_apb_pslverr  1'b0

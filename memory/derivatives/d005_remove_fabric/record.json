@@ -1,0 +1,16 @@
+{
+  "id": "d005_remove_fabric",
+  "instruction": "Remove the bus fabric",
+  "parent": "derivsense",
+  "derivative_type": "scale_down",
+  "edits": [],
+  "verified": true,
+  "must_refuse": [
+    "Remove the bus fabric",
+    "Strip out the interconnect",
+    "Make it work without the crossbar",
+    "Make the sensor path twice as fast",
+    "Port this to a 7nm process"
+  ],
+  "notes": "Two kinds of refusal in one record. Removing the fabric orphans all three bus slaves, and there is no edit that reconnects them without inventing an interconnect, so the tool must decline. The last two instructions are not derivative requests at all and must be declined as not understood."
+}

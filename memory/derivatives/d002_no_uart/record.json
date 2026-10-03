@@ -1,0 +1,46 @@
+{
+  "id": "d002_no_uart",
+  "instruction": "Remove the UART, we do not need the serial console",
+  "parent": "derivsense",
+  "derivative_type": "scale_down",
+  "edits": [
+    {
+      "edit": "remove",
+      "instance": "uart_tx0",
+      "reason": "the instruction names it"
+    },
+    {
+      "edit": "remove_port",
+      "port": "uart_tx",
+      "reason": "uart_tx0 was its only driver"
+    },
+    {
+      "edit": "tie",
+      "ref": "bus_fabric0/m2_apb_prdata",
+      "value": "32'b0",
+      "reason": "fabric port m2 has no slave any more"
+    },
+    {
+      "edit": "tie",
+      "ref": "bus_fabric0/m2_apb_pready",
+      "value": "1'b1",
+      "reason": "an unused port must still report ready, as m3 does"
+    },
+    {
+      "edit": "tie",
+      "ref": "bus_fabric0/m2_apb_pslverr",
+      "value": "1'b0",
+      "reason": "fabric port m2 has no slave any more"
+    }
+  ],
+  "child_tcl": "child.tcl",
+  "golden_source": "hand-written",
+  "verified": true,
+  "paraphrases": [
+    "Remove the UART, we do not need the serial console",
+    "Take out the UART",
+    "Build it without the serial port",
+    "Delete uart_tx0"
+  ],
+  "notes": "pready is tied high, not low: a port that never asserts ready would hang any access decoded to it. The value is the one the parent already uses on the spare m3 port."
+}

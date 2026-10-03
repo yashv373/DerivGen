@@ -89,12 +89,22 @@ def test_comments_and_blanks_are_ignored():
 # The parent platform.
 # ---------------------------------------------------------------------------
 
+def test_platform_header_names_the_design():
+    # Otherwise a golden saved as child.tcl becomes a module called "child".
+    design = read_tcl("# platform: my_chip\nadd_instance a B\n", name="fallback")
+    assert design.name == "my_chip"
+
+
+def test_name_falls_back_to_the_filename():
+    assert read_tcl("add_instance a B\n", name="fallback").name == "fallback"
+
+
 def test_parent_loads():
     design = read_tcl_file(PARENT)
     assert design.name == "derivsense"
-    assert len(design.instances) == 16
+    assert len(design.instances) == 15
     assert design.instance("lockstep_cmp0").ip == "Lockstep_Comparator_IP"
-    assert design.bus_port("host_axi").role == "slave"
+    assert design.bus_port("host_apb").role == "slave"
     assert design.port("sensor_data_in").width == 64
 
 

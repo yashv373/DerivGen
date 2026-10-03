@@ -13,7 +13,6 @@ the reader and the writer, and nothing in here changes.
 
 from dataclasses import dataclass, field
 
-
 # ---------------------------------------------------------------------------
 # A reference to one end of a connection.
 # ---------------------------------------------------------------------------

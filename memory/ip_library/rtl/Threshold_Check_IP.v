@@ -1,12 +1,19 @@
-module Threshold_Check_IP(
-    input wire clk_fast, input wire rst,
-    input wire [31:0] formatted_data,
-    output reg threshold_alert
+// Threshold_Check_IP -- raises alert when a sample exceeds a fixed limit.
+
+module Threshold_Check_IP (
+    input  wire        clk,
+    input  wire        rst_n,
+    input  wire [31:0] data_in,
+    output reg         alert
 );
-    // Hardcoded threshold of 0x000F_0000 for the sensor
-    always @(posedge clk_fast) begin
-        if (rst) threshold_alert <= 1'b0;
-        else if (formatted_data > 32'h000F0000) threshold_alert <= 1'b1;
-        else threshold_alert <= 1'b0;
+
+    localparam [31:0] LIMIT = 32'd1000;
+
+    always @(posedge clk) begin
+        if (!rst_n)
+            alert <= 1'b0;
+        else
+            alert <= (data_in > LIMIT);
     end
+
 endmodule

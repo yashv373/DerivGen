@@ -1,0 +1,14 @@
+{
+  "id": "d004_uart_overlap",
+  "instruction": "Move the UART to 0x20001000",
+  "parent": "derivsense",
+  "derivative_type": "scale_down",
+  "edits": [],
+  "verified": true,
+  "must_refuse": [
+    "Move the UART to 0x20001000",
+    "Readdress uart_tx0 to 0x20001000",
+    "Relocate the serial port to 0x20001000"
+  ],
+  "notes": "A deliberate trap. 0x20001000 is where reg_bank0 already sits, so the move must be refused with the overlap named. Showing the tool decline a bad request matters as much as showing it succeed."
+}

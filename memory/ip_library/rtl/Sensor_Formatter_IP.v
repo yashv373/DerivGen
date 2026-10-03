@@ -1,11 +1,17 @@
-module Sensor_Formatter_IP(
-    input wire clk_fast, input wire rst,
-    input wire [31:0] raw_sensor_in,
-    output reg [31:0] formatted_data
+// Sensor_Formatter_IP -- registers a raw sensor word and scales it.
+
+module Sensor_Formatter_IP (
+    input  wire        clk,
+    input  wire        rst_n,
+    input  wire [31:0] data_in,
+    output reg  [31:0] data_out
 );
-    // Applies a basic mask and shift to format raw data
-    always @(posedge clk_fast) begin
-        if (rst) formatted_data <= 32'd0;
-        else formatted_data <= (raw_sensor_in & 32'h00FFFFFF) << 2;
+
+    always @(posedge clk) begin
+        if (!rst_n)
+            data_out <= 32'd0;
+        else
+            data_out <= data_in << 1;   // stand-in for real scaling
     end
+
 endmodule

@@ -1,7 +1,11 @@
-module Lockstep_Comparator_IP(
-    input wire [31:0] fsm_a, input wire [31:0] fsm_b,
-    output wire err_lockstep
+// Lockstep_Comparator_IP -- flags a mismatch between the two FSMs.
+
+module Lockstep_Comparator_IP (
+    input  wire [31:0] state_a,
+    input  wire [31:0] state_b,
+    output wire        err
 );
-    // Pure combinational XOR check for safety mismatch
-    assign err_lockstep = (fsm_a != fsm_b);
+
+    assign err = (state_a != state_b);
+
 endmodule

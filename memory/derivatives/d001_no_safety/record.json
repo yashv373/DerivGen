@@ -1,0 +1,50 @@
+{
+  "id": "d001_no_safety",
+  "instruction": "Remove the safety features to make a low-cost variant",
+  "parent": "derivsense",
+  "derivative_type": "scale_down",
+  "edits": [
+    {
+      "edit": "remove",
+      "instance": "shadow_fsm0",
+      "reason": "tagged safety"
+    },
+    {
+      "edit": "remove",
+      "instance": "lockstep_cmp0",
+      "reason": "tagged safety"
+    },
+    {
+      "edit": "remove",
+      "instance": "parity_gen0",
+      "reason": "tagged safety"
+    },
+    {
+      "edit": "remove",
+      "instance": "parity_chk0",
+      "reason": "tagged safety"
+    },
+    {
+      "edit": "remove_port",
+      "port": "err_lockstep",
+      "reason": "lockstep_cmp0 was its only driver"
+    },
+    {
+      "edit": "remove_port",
+      "port": "err_parity",
+      "reason": "parity_chk0 was its only driver"
+    }
+  ],
+  "child_tcl": "child.tcl",
+  "golden_source": "hand-written",
+  "verified": true,
+  "paraphrases": [
+    "Remove the safety features to make a low-cost variant",
+    "Give me a derivative without the safety features",
+    "Strip out the redundancy for a consumer part",
+    "I need a version with no lockstep or parity checking",
+    "Drop all the diagnostic logic",
+    "Remove the shadow FSM, the comparator and the parity blocks"
+  ],
+  "notes": "core_fsm0 stays; its state output is simply no longer compared. The spare fabric port m3 keeps its placeholder tie-offs."
+}
