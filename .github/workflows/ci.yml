@@ -19,6 +19,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pytest ruff
+          # Install the package itself, so `pytest` can import derivgen
+          # without relying on the current directory being on the path.
+          pip install -e .
 
       # Verilator is the only external tool, and only for the optional lint
       # below. The framework itself needs nothing but the standard library.
@@ -29,7 +32,7 @@ jobs:
         run: ruff check derivgen tools tests
 
       - name: Tests
-        run: pytest -q
+        run: python -m pytest -q
 
       - name: Benchmark
         run: python -m derivgen bench --json out/bench.json
