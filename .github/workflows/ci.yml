@@ -47,8 +47,13 @@ jobs:
             python -m derivgen build "$tcl" -o "out/$name.v"
           done
           for v in out/*.v; do
-            echo "--- $v"
-            verilator --lint-only -Wno-fatal \
+            # The module name is not the file name (child.tcl declares its own
+            # platform name), so read it out of the file. Naming the top also
+            # stops Verilator warning that the library IPs look like tops too.
+            top=$(sed -n 's/^module \([A-Za-z_][A-Za-z0-9_]*\).*/\1/p' "$v" | head -1)
+            echo "--- $v  (top: $top)"
+            verilator --lint-only --top-module "$top" \
+              -Wno-DECLFILENAME -Wno-UNUSEDSIGNAL \
               -Imemory/ip_library/rtl "$v" memory/ip_library/rtl/*.v
           done
 
