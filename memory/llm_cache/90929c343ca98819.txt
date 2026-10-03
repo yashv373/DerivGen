@@ -1,0 +1,6 @@
+[
+  {"edit": "remove", "instance": "lockstep_cmp0", "reason": "lockstep comparator is a safety feature"},
+  {"edit": "remove", "instance": "parity_chk0", "reason": "parity checker is a safety feature"},
+  {"edit": "remove", "instance": "parity_gen0", "reason": "parity generator is a safety feature"},
+  {"edit": "remove", "instance": "shadow_fsm0", "reason": "shadow FSM is a safety feature"}
+]

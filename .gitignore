@@ -3,4 +3,7 @@ __pycache__/
 .pytest_cache/
 *.egg-info/
 build/
+
+# benchmark scratch output. memory/llm_cache is committed on purpose, so a
+# benchmark can be replayed offline with --llm mock.
 out/

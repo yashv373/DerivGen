@@ -60,6 +60,10 @@ def cmd_generate(args) -> int:
         print(f"  {line}")
     print()
 
+    if plan.error:
+        print("ERROR (the tool broke; this is not a verdict on the request)")
+        print(f"  {plan.error}")
+        return 3
     if not plan.ok:
         print("REFUSED")
         print(f"  {plan.refused}")
@@ -173,10 +177,12 @@ def cmd_bench(args) -> int:
                 plan = _make_plan(args, instruction, parent, library,
                                   golden.name, exclude=record.case_id)
                 if not plan.ok:
+                    why = (plan.error or plan.refused).splitlines()[0]
+                    label = "error" if plan.error else "refused"
                     rows.append({"case": record.case_id, "mode": args.planner,
                                  "instruction": instruction, "f1": 0.0,
-                                 "pass": False,
-                                 "detail": "refused: " + plan.refused.splitlines()[0]})
+                                 "pass": False, "error": bool(plan.error),
+                                 "detail": f"{label}: {why}"})
                     continue
                 design = apply_edits(parent, plan.edits, golden.name).design
                 result = compare(design, golden)
@@ -191,12 +197,21 @@ def cmd_bench(args) -> int:
         for instruction in raw.get("must_refuse", []):
             plan = _make_plan(args, instruction, parent, library,
                               "should_not_exist", exclude=record.case_id)
+            # plan.declined, not plan.ok: an API timeout produces no edits
+            # too, and that must not be scored as a correct refusal.
+            correct = plan.declined
+            if plan.error:
+                detail = "error: " + plan.error.splitlines()[0]
+            elif correct:
+                detail = ""
+            else:
+                detail = "accepted, but should have refused"
             rows.append({
                 "case": record.case_id, "mode": args.planner + "/refuse",
                 "instruction": instruction,
-                "f1": 1.0 if not plan.ok else 0.0,
-                "pass": not plan.ok,
-                "detail": "" if not plan.ok else "accepted, but should have refused",
+                "f1": 1.0 if correct else 0.0,
+                "pass": correct, "error": bool(plan.error),
+                "detail": detail,
             })
 
     # -- report ----------------------------------------------------------
@@ -231,13 +246,23 @@ def cmd_bench(args) -> int:
     # because those test the machinery. How many paraphrases the planner gets
     # is a measurement, not a regression -- it is the number we are trying to
     # move. Use --strict to fail on those too.
+    errored = [r for r in rows if r.get("error")]
+    if errored:
+        print(f"{'(errors)':<16} {len(errored)} row(s) never got an answer "
+              f"(network, quota or a bad reply) and are scored 0")
+
     must_pass = [r for r in rows
                  if r["mode"] == "oracle" or r["mode"].endswith("/refuse")]
-    broken = [r for r in must_pass if not r["pass"]]
+    broken = [r for r in must_pass if not r["pass"] and not r.get("error")]
     if broken:
         print()
         print(f"FAILED: {len(broken)} oracle/refusal case(s) broke. "
               f"The machinery is wrong, not just the planner.")
+        return 1
+    if errored:
+        print()
+        print("INCOMPLETE: some rows never got an answer, so this run is not "
+              "a fair score. Nothing is known to be broken.")
         return 1
     if args.strict and total_passed != len(rows):
         return 1
@@ -260,7 +285,7 @@ def main(argv=None) -> int:
     parser.add_argument("--parent", default="derivsense",
                         help="parent platform in memory/platforms")
     parser.add_argument("--planner", choices=("rules", "llm"), default="rules")
-    parser.add_argument("--llm", choices=("mock", "manual"), default="mock",
+    parser.add_argument("--llm", choices=("mock", "manual", "anthropic", "gemini"), default="mock",
                         help="where the language model lives, if --planner llm")
     sub = parser.add_subparsers(dest="command", required=True)
 

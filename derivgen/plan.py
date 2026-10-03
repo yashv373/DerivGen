@@ -34,11 +34,24 @@ class Plan:
     instruction: str
     edits: list[Edit] = field(default_factory=list)
     trace: list[str] = field(default_factory=list)   # audit only, never applied
-    refused: str | None = None                       # why, if it could not be done
+    refused: str | None = None   # a real decision: this cannot be derived
+    error: str | None = None     # something broke: network, bad reply, a bug
 
     @property
     def ok(self) -> bool:
-        return self.refused is None
+        return self.refused is None and self.error is None
+
+    @property
+    def declined(self) -> bool:
+        """
+        Refused on purpose, as opposed to having fallen over.
+
+        The benchmark must tell these apart. A request that *should* be
+        refused is only answered correctly if the tool reasoned its way
+        there -- an API timeout that happens to produce no edits is a
+        failure wearing a right answer's clothes.
+        """
+        return self.refused is not None and self.error is None
 
 
 # ---------------------------------------------------------------------------
@@ -453,7 +466,7 @@ def plan_llm(instruction: str, parent: Design, library: dict[str, Ip],
             reply = backend.complete(prompt)
             raw_edits, refusal = parse_response(reply)
         except LlmError as err:
-            plan.refused = f"model reply could not be used: {err}"
+            plan.error = f"model reply could not be used: {err}"
             return plan
 
         if refusal:

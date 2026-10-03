@@ -1,0 +1,3 @@
+[
+  {"edit": "remove", "instance": "uart_tx0", "reason": "Take out the UART"}
+]

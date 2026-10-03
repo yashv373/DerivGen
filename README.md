@@ -99,6 +99,52 @@ having. 0.856 is the number it has to beat.
 the register bank's address, removing the interconnect everything hangs off,
 and "port this to a 7nm process" are all correctly refused, with a reason.
 
+### With a real model
+
+Running the same benchmark through `--planner llm` against a hosted model
+(Gemini 3.8 Flash), head to head on the instructions it answered:
+
+```
+instruction                                            rules     llm
+--------------------------------------------------------------------
+Remove the safety features to make a low-cost vari        ok      ok
+Give me a derivative without the safety features          ok      ok
+I need a version with no lockstep or parity checki        ok      ok
+Drop all the diagnostic logic                             ok      ok
+Remove the shadow FSM, the comparator and the pari     WRONG      ok
+Remove the UART, we do not need the serial console        ok      ok
+Take out the UART                                      WRONG      ok
+Delete uart_tx0                                           ok      ok
+--------------------------------------------------------------------
+on the 8 both answered                                    6/8     8/8
+```
+
+The interesting row is the fifth. Retrieval *offered* the model `core_fsm0`
+as context, because the word "FSM" matches the `control` tag — and the model
+correctly declined to remove it. That is exactly where the keyword planner
+went wrong.
+
+**This is 8 instructions, not a study.** A free API tier ran out of quota
+part-way through, so six paraphrases and all eight refusal cases never got a
+reply and are excluded rather than scored. The benchmark marks those as
+errors and prints `INCOMPLETE`, because a run that did not finish is not a
+score:
+
+```
+(errors)         14 row(s) never got an answer (network, quota or a bad
+                 reply) and are scored 0
+
+INCOMPLETE: some rows never got an answer, so this run is not a fair score.
+Nothing is known to be broken.
+```
+
+This distinction had to be built deliberately. A failed API call produces no
+edits, which looks identical to a correct refusal — so an early version of
+the benchmark scored network outages as right answers on the refusal cases.
+`Plan` now separates `refused` (a decision) from `error` (a breakage), and
+only a deliberate decline counts. `tests/test_pipeline.py::
+test_a_broken_backend_is_an_error_not_a_refusal` holds that line.
+
 ## Why RAG, and why it is this simple
 
 "Retrieval-augmented generation" here means: look up the few relevant facts,
@@ -221,12 +267,32 @@ python -m derivgen bench --json out/bench.json
 pytest -q
 ```
 
-### Using it with a chat-only model
+### Model backends
 
-`--llm manual` writes the prompt to a file, you paste it into whatever chat
-window you have, paste the reply back, and it carries on. Replies are cached
-by prompt hash, so a benchmark can be replayed offline afterwards with
-`--llm mock`. There is no API key anywhere.
+Four, all interchangeable. The planner does not know which one it is talking
+to.
+
+| `--llm` | What it does |
+|---|---|
+| `gemini` | calls the Gemini API; needs `GEMINI_API_KEY` |
+| `anthropic` | calls the Claude API; needs `ANTHROPIC_API_KEY` |
+| `manual` | writes the prompt to a file, you paste the reply back |
+| `mock` | replays cached replies; used by tests and CI |
+
+Both API backends are plain HTTP with `urllib`, so there is still nothing to
+install. Keys come from the environment and are never written to disk.
+
+Every reply is cached by the hash of its prompt, which means three things: a
+re-run costs nothing, a benchmark is reproducible, and whatever you collect
+through `manual` can be replayed offline afterwards with `mock`.
+
+```bash
+export GEMINI_API_KEY=...
+python -m derivgen --planner llm --llm gemini bench
+```
+
+Set `DERIVGEN_LLM_INTERVAL` to change the gap between calls (default 6s for
+Gemini) if your tier's rate limit is tighter or looser.
 
 ## Layout
 

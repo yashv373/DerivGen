@@ -148,6 +148,35 @@ def test_planner_repairs_a_dangling_bus_port(parent, library):
     assert ties["bus_fabric0/m2_apb_prdata"] == "32'b0"
 
 
+def test_a_broken_backend_is_an_error_not_a_refusal(parent, library):
+    """
+    The measurement bug this guards against: if the model call falls over,
+    the planner produces no edits, which looks exactly like a correct refusal.
+    The benchmark would then score an outage as a right answer.
+    """
+    from derivgen.llm import LlmError
+    from derivgen.plan import plan_llm
+
+    class BrokenBackend:
+        name = "broken"
+
+        def complete(self, prompt):
+            raise LlmError("the network is on fire")
+
+    plan = plan_llm("Remove the safety features", parent, library, "child",
+                    BrokenBackend())
+    assert not plan.ok
+    assert plan.error is not None
+    assert not plan.declined, "an outage must not count as a deliberate refusal"
+
+
+def test_a_real_refusal_is_declined(parent, library):
+    plan = plan_rules("Port this to a 7nm process", parent, library, "child")
+    assert not plan.ok
+    assert plan.error is None
+    assert plan.declined
+
+
 def test_planner_refuses_an_unreadable_instruction(parent, library):
     plan = plan_rules("Port this to a 7nm process", parent, library, "child")
     assert not plan.ok

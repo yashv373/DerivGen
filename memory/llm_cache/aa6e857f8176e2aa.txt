@@ -1,0 +1,3 @@
+[
+  {"edit": "remove", "instance": "uart_tx0", "reason": "remove the UART as serial console is not needed"}
+]

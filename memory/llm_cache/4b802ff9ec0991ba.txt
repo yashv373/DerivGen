@@ -1,0 +1,6 @@
+[
+  {"edit": "remove", "instance": "lockstep_cmp0", "reason": "Remove lockstep comparator"},
+  {"edit": "remove", "instance": "shadow_fsm0", "reason": "Remove shadow FSM used for lockstep execution"},
+  {"edit": "remove", "instance": "parity_chk0", "reason": "Remove parity checker"},
+  {"edit": "remove", "instance": "parity_gen0", "reason": "Remove parity generator"}
+]

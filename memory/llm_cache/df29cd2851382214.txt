@@ -1,0 +1,6 @@
+[
+  {"edit": "remove", "instance": "shadow_fsm0", "reason": "the instruction names it"},
+  {"edit": "remove", "instance": "lockstep_cmp0", "reason": "the instruction names it"},
+  {"edit": "remove", "instance": "parity_chk0", "reason": "the instruction names it"},
+  {"edit": "remove", "instance": "parity_gen0", "reason": "the instruction names it"}
+]

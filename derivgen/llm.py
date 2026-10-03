@@ -22,7 +22,11 @@ Backends:
 
 import hashlib
 import json
+import os
 import re
+import time
+import urllib.error
+import urllib.request
 from pathlib import Path
 
 from .design import Design
@@ -217,9 +221,135 @@ class ManualBackend:
         return reply
 
 
+class ApiBackend:
+    """
+    Calls a hosted model over HTTP.
+
+    Two providers are built in. Both are plain POSTs with urllib, so the
+    framework still needs nothing outside the standard library. The API key
+    comes from the environment and is never written to disk or logged.
+
+    Replies are cached by prompt hash exactly like the manual backend, so a
+    benchmark can be re-run offline afterwards with --llm mock, and a repeat
+    run costs nothing.
+    """
+
+    def __init__(self, provider: str, cache_dir, model: str | None = None):
+        self.provider = provider
+        self.cache_dir = Path(cache_dir)
+        self.name = provider
+
+        if provider == "anthropic":
+            self.key_var, default_model = "ANTHROPIC_API_KEY", "claude-sonnet-5-5"
+        elif provider == "gemini":
+            self.key_var, default_model = "GEMINI_API_KEY", "gemini-3.8-flash"
+        else:
+            raise LlmError(f"unknown provider {provider!r}")
+
+        self.model = model or os.environ.get(
+            f"{provider.upper()}_MODEL", default_model
+        )
+        self.api_key = os.environ.get(self.key_var)
+
+        # Free API tiers limit requests per minute. A benchmark fires a few
+        # dozen in a row, so leave a gap between them rather than relying on
+        # the retry to dig us out. DERIVGEN_LLM_INTERVAL overrides it.
+        self.min_interval = float(
+            os.environ.get("DERIVGEN_LLM_INTERVAL", "6" if provider == "gemini" else "0")
+        )
+        self._last_call = 0.0
+
+    def complete(self, prompt: str) -> str:
+        digest = prompt_hash(prompt)
+        cached = self.cache_dir / f"{digest}.txt"
+        if cached.exists():
+            return cached.read_text(encoding="utf-8")
+
+        if not self.api_key:
+            raise LlmError(
+                f"{self.key_var} is not set, and this prompt is not cached "
+                f"(hash {digest})."
+            )
+
+        reply = self._ask(prompt)
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        cached.write_text(reply, encoding="utf-8")
+        return reply
+
+    def _ask(self, prompt: str) -> str:
+        if self.provider == "anthropic":
+            url = "https://api.anthropic.com/v1/messages"
+            headers = {
+                "content-type": "application/json",
+                "x-api-key": self.api_key,
+                "anthropic-version": "2023-06-01",
+            }
+            payload = {
+                "model": self.model,
+                "max_tokens": 2000,
+                "messages": [{"role": "user", "content": prompt}],
+            }
+        else:
+            url = (f"https://generativelanguage.googleapis.com/v1beta/models/"
+                   f"{self.model}:generateContent")
+            headers = {
+                "content-type": "application/json",
+                "x-goog-api-key": self.api_key,
+            }
+            payload = {
+                "contents": [{"parts": [{"text": prompt}]}],
+                # Temperature 0: the same prompt should give the same plan.
+                "generationConfig": {"temperature": 0},
+            }
+
+        request = urllib.request.Request(
+            url, data=json.dumps(payload).encode("utf-8"),
+            headers=headers, method="POST",
+        )
+        gap = self.min_interval - (time.monotonic() - self._last_call)
+        if gap > 0:
+            time.sleep(gap)
+
+        # Rate limits and "busy" are temporary, so wait and try again rather
+        # than failing a whole benchmark run on one unlucky call.
+        for attempt in range(6):
+            self._last_call = time.monotonic()
+            try:
+                with urllib.request.urlopen(request, timeout=120) as response:
+                    body = json.loads(response.read().decode("utf-8"))
+                break
+            except urllib.error.HTTPError as err:
+                detail = err.read().decode("utf-8", "replace")[:400]
+                if err.code in (429, 500, 502, 503, 504) and attempt < 5:
+                    time.sleep(min(2 ** attempt * 4, 60))
+                    continue
+                raise LlmError(
+                    f"{self.provider} returned {err.code}: {detail}"
+                ) from None
+            except urllib.error.URLError as err:
+                raise LlmError(
+                    f"could not reach {self.provider}: {err.reason}"
+                ) from None
+
+        try:
+            if self.provider == "anthropic":
+                return body["content"][0]["text"]
+            parts = body["candidates"][0]["content"]["parts"]
+            return "".join(p.get("text", "") for p in parts)
+        except (KeyError, IndexError):
+            raise LlmError(
+                f"unexpected reply shape from {self.provider}: "
+                f"{json.dumps(body)[:300]}"
+            ) from None
+
+
 def make_backend(kind: str, cache_dir, work_dir=None):
     if kind == "mock":
         return MockBackend(cache_dir)
     if kind == "manual":
         return ManualBackend(cache_dir, work_dir)
-    raise LlmError(f"unknown backend {kind!r}; use 'mock' or 'manual'")
+    if kind in ("anthropic", "gemini"):
+        return ApiBackend(kind, cache_dir)
+    raise LlmError(
+        f"unknown backend {kind!r}; use mock, manual, anthropic or gemini"
+    )
