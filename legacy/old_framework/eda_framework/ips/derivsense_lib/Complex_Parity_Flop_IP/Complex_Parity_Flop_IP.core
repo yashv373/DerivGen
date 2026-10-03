@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:complex_parity_flop_ip:1.0
+description: Auto-packaged IP block for Complex_Parity_Flop_IP
+
+filesets:
+  rtl:
+    files:
+      - Complex_Parity_Flop_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

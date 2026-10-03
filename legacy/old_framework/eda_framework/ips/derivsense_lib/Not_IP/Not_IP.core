@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:not_ip:1.0
+description: Auto-packaged IP block for Not_IP
+
+filesets:
+  rtl:
+    files:
+      - Not_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

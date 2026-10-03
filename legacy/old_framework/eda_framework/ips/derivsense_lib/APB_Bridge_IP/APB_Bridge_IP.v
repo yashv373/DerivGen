@@ -1,0 +1,1 @@
+module APB_Bridge_IP(input clk, input rst, input [31:0] axi_in, output [31:0] apb_out); assign apb_out = axi_in; endmodule

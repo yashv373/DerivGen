@@ -1,0 +1,1 @@
+module SRAM_Ctrl_IP(input clk, input rst, input [31:0] axi_in, input [31:0] sram_dout, output sram_we, output [10:0] sram_addr, output [31:0] sram_din); assign sram_we = axi_in[31]; assign sram_addr = axi_in[10:0]; assign sram_din = axi_in; endmodule

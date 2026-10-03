@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:threshold_check_ip:1.0
+description: Auto-packaged IP block for Threshold_Check_IP
+
+filesets:
+  rtl:
+    files:
+      - Threshold_Check_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

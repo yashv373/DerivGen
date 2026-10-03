@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:demux1to4_ip:1.0
+description: Auto-packaged IP block for Demux1to4_IP
+
+filesets:
+  rtl:
+    files:
+      - Demux1to4_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

@@ -1,0 +1,1 @@
+module Demux1to2_IP(input wire sel, input wire [31:0] in0, output wire [31:0] out0, output wire [31:0] out1); assign out0 = ~sel ? in0 : 32'd0; assign out1 = sel ? in0 : 32'd0; endmodule

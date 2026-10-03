@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:lockstep_comparator_ip:1.0
+description: Auto-packaged IP block for Lockstep_Comparator_IP
+
+filesets:
+  rtl:
+    files:
+      - Lockstep_Comparator_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

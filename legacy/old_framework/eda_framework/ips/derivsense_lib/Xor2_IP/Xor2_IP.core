@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:xor2_ip:1.0
+description: Auto-packaged IP block for Xor2_IP
+
+filesets:
+  rtl:
+    files:
+      - Xor2_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

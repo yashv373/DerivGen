@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:sram_ctrl_ip:1.0
+description: Auto-packaged IP block for SRAM_Ctrl_IP
+
+filesets:
+  rtl:
+    files:
+      - SRAM_Ctrl_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

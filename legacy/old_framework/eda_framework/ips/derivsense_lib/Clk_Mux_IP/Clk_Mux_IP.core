@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:clk_mux_ip:1.0
+description: Auto-packaged IP block for Clk_Mux_IP
+
+filesets:
+  rtl:
+    files:
+      - Clk_Mux_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

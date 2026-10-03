@@ -1,0 +1,1 @@
+module Out_Pad_IP(input core_out, output pad_out); assign pad_out = core_out; endmodule

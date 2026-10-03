@@ -1,0 +1,1 @@
+module PLL_Macro_IP(input clk_ref, output clk_fast, output clk_slow); assign clk_fast = clk_ref; assign clk_slow = clk_ref; endmodule

@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:alu_mult_ip:1.0
+description: Auto-packaged IP block for ALU_Mult_IP
+
+filesets:
+  rtl:
+    files:
+      - ALU_Mult_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

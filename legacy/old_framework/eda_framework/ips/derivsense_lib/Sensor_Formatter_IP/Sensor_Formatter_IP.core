@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:sensor_formatter_ip:1.0
+description: Auto-packaged IP block for Sensor_Formatter_IP
+
+filesets:
+  rtl:
+    files:
+      - Sensor_Formatter_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

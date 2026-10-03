@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:mux4to1_ip:1.0
+description: Auto-packaged IP block for Mux4to1_IP
+
+filesets:
+  rtl:
+    files:
+      - Mux4to1_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:spi_master_ip:1.0
+description: Auto-packaged IP block for SPI_Master_IP
+
+filesets:
+  rtl:
+    files:
+      - SPI_Master_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

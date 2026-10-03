@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:async_fifo_ip:1.0
+description: Auto-packaged IP block for Async_FIFO_IP
+
+filesets:
+  rtl:
+    files:
+      - Async_FIFO_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

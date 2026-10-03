@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:global_clk_buf_ip:1.0
+description: Auto-packaged IP block for Global_Clk_Buf_IP
+
+filesets:
+  rtl:
+    files:
+      - Global_Clk_Buf_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

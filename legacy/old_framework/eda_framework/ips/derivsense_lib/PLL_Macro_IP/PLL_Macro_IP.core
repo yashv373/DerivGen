@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:pll_macro_ip:1.0
+description: Auto-packaged IP block for PLL_Macro_IP
+
+filesets:
+  rtl:
+    files:
+      - PLL_Macro_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

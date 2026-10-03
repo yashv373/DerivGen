@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:alu_sub_ip:1.0
+description: Auto-packaged IP block for ALU_Sub_IP
+
+filesets:
+  rtl:
+    files:
+      - ALU_Sub_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

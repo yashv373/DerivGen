@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:in_pad_ip:1.0
+description: Auto-packaged IP block for In_Pad_IP
+
+filesets:
+  rtl:
+    files:
+      - In_Pad_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

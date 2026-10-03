@@ -1,0 +1,1 @@
+module UART_RX_IP(input clk_slow, input rst, input rx, output [31:0] apb_out); assign apb_out = {31'd0, rx}; endmodule

@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:uart_tx_ip:1.0
+description: Auto-packaged IP block for UART_TX_IP
+
+filesets:
+  rtl:
+    files:
+      - UART_TX_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

@@ -1,0 +1,1 @@
+module Inout_Pad_IP(input core_out, input oe, inout pad_inout, output core_in); assign pad_inout = oe ? core_out : 1'bz; assign core_in = pad_inout; endmodule

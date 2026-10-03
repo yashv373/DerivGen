@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:axi4_lite_fabric_ip:1.0
+description: Auto-packaged IP block for AXI4_Lite_Fabric_IP
+
+filesets:
+  rtl:
+    files:
+      - AXI4_Lite_Fabric_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

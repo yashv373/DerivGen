@@ -1,0 +1,1 @@
+module Sync_Reset_IP(input clk, input rst_in, output rst_out); reg r1, r2; always @(posedge clk) begin r1 <= rst_in; r2 <= r1; end assign rst_out = r2; endmodule

@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:parity_gen_ip:1.0
+description: Auto-packaged IP block for Parity_Gen_IP
+
+filesets:
+  rtl:
+    files:
+      - Parity_Gen_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

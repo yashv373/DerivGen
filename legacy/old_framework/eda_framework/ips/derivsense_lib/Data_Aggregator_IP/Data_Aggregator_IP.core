@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:data_aggregator_ip:1.0
+description: Auto-packaged IP block for Data_Aggregator_IP
+
+filesets:
+  rtl:
+    files:
+      - Data_Aggregator_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

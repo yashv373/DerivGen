@@ -1,0 +1,1 @@
+module UART_TX_IP(input clk_slow, input rst, input [31:0] apb_in, output tx); assign tx = apb_in[0]; endmodule

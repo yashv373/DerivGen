@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:core_fsm_ip:1.0
+description: Auto-packaged IP block for Core_FSM_IP
+
+filesets:
+  rtl:
+    files:
+      - Core_FSM_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

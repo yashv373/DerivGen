@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:regbank_ip:1.0
+description: Auto-packaged IP block for RegBank_IP
+
+filesets:
+  rtl:
+    files:
+      - RegBank_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

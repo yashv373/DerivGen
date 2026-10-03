@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:apb_bridge_ip:1.0
+description: Auto-packaged IP block for APB_Bridge_IP
+
+filesets:
+  rtl:
+    files:
+      - APB_Bridge_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

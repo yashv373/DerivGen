@@ -1,0 +1,1 @@
+module AXI4_Lite_Fabric_IP(input clk, input rst, input [31:0] s_axi_awaddr, input [31:0] s_axi_wdata, output [31:0] m_axi_awaddr, output [31:0] m_axi_wdata); assign m_axi_awaddr = s_axi_awaddr; assign m_axi_wdata = s_axi_wdata; endmodule

@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:or3_ip:1.0
+description: Auto-packaged IP block for Or3_IP
+
+filesets:
+  rtl:
+    files:
+      - Or3_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

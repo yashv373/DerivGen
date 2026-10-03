@@ -1,0 +1,1 @@
+module Parity_Check_IP(input [31:0] data_in, input parity_bit, output parity_err); assign parity_err = (^data_in) != parity_bit; endmodule

@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:and2_ip:1.0
+description: Auto-packaged IP block for And2_IP
+
+filesets:
+  rtl:
+    files:
+      - And2_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

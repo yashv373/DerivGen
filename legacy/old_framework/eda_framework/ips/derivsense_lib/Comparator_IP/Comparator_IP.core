@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:comparator_ip:1.0
+description: Auto-packaged IP block for Comparator_IP
+
+filesets:
+  rtl:
+    files:
+      - Comparator_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

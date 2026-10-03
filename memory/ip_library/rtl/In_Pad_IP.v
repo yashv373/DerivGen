@@ -1,0 +1,1 @@
+module In_Pad_IP(input pad_in, output core_in); assign core_in = pad_in; endmodule

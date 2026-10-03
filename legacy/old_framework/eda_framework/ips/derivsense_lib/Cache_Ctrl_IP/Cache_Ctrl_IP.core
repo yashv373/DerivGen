@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:cache_ctrl_ip:1.0
+description: Auto-packaged IP block for Cache_Ctrl_IP
+
+filesets:
+  rtl:
+    files:
+      - Cache_Ctrl_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

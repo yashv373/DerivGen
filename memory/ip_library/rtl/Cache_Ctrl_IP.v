@@ -1,0 +1,1 @@
+module Cache_Ctrl_IP(input clk, input rst, input [31:0] axi_in, input [31:0] cache_dout, output cache_re, output [5:0] cache_addr); assign cache_re = axi_in[31]; assign cache_addr = axi_in[5:0]; endmodule

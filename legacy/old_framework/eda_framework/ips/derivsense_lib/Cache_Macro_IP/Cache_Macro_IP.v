@@ -1,0 +1,1 @@
+module Cache_Macro_IP(input clk, input re, input [5:0] addr, output reg [31:0] dout); reg [31:0] mem [0:63]; always @(posedge clk) if(re) dout <= mem[addr]; endmodule

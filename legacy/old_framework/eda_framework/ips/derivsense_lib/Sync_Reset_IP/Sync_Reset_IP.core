@@ -1,0 +1,13 @@
+CAPI=2:
+name: derivgen:ip:sync_reset_ip:1.0
+description: Auto-packaged IP block for Sync_Reset_IP
+
+filesets:
+  rtl:
+    files:
+      - Sync_Reset_IP.v
+    file_type: verilogSource
+
+targets:
+  default:
+    filesets: [rtl]

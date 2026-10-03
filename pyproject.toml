@@ -1,0 +1,19 @@
+[project]
+name = "derivgen"
+version = "0.1.0"
+description = "Derive a platform from an existing one by editing its script."
+requires-python = ">=3.11"
+dependencies = []          # standard library only, on purpose
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["derivgen"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 90

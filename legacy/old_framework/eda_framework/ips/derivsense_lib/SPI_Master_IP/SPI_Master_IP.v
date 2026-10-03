@@ -1,0 +1,1 @@
+module SPI_Master_IP(input clk_slow, input rst, input [31:0] apb_in, input miso, output mosi, output sck, output cs); assign mosi = apb_in[0]; assign sck = clk_slow; assign cs = 0; endmodule
